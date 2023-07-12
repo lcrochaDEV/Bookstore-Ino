@@ -1,8 +1,10 @@
 /**************************LUCAS ROCHA****************************/
 /*
  * Portas Alalogicas A = 1,2,3,4,5,6,7.
+ * Portas Analogicas/Digitais 14, 15, 16, 17, 18, 19, 20.
  * Portas Digitais D = 2,3,4,5PWM,6PWM,7,8,9PWM,10PWM,11PWM,12,13.
- * 
+ *
+ * Data 12/07/2023
 */
 #define PIN_1 1 //PIN_A1
 #define PIN_13 13 //PIN_D13
