@@ -6,15 +6,11 @@
  *
  * Data 12/07/2023
 */
-#define PIN_1 1 //PIN_A1
-#define PIN_13 13 //PIN_D13
 /*****************************************************************/
-
-
 String promptCLI = "ESP-NOW> ";
 
-String pinType[] = {"A1", "D13"};
-String bufferArray[3]; // => {pino, estado}
+String pinType[] = {"A1", "D2", "D13"};
+String bufferArray[3]; // =>  activePin, estado}
 
 int pin_On = HIGH; //PIN STATE ALTO = 1
 int pin_Off = LOW; //PIN STATE BAIXO = 0
@@ -42,11 +38,14 @@ void console() {
 int pinTypeExiste(String consoleText){ //imprimindo texto em branco*
   while(contagem < pinMode_lenght()) {
     if(consoleText.indexOf(String(pinType[contagem])) == 0){ //VERIFICA SE EXISTE NO ARRAY
-      if (consoleText.indexOf("A") == 0 && consoleText.length() == 2 || consoleText.indexOf("D") == 0 && consoleText.length() == 3) {
-        bufferArray[0] = consoleText;
+      if (consoleText.indexOf("A") == 0 && consoleText.length() == 2 || consoleText.indexOf("D") == 0 && consoleText.length() <= 3) {
+        bufferArray[0] = consoleText; //OBRIGATÓRIO
         printTxt(consoleText);
       break;
       }
+    }else if(consoleText == "INPUT" || consoleText == "OUTPUT" || consoleText == "OUTPUT"){
+      pin_mode(consoleText);
+    break;
     }else if(consoleText == "ON" || consoleText == "OFF"){;
       pinOnOff(consoleText);
     break;
@@ -64,24 +63,31 @@ int pinTypeExiste(String consoleText){ //imprimindo texto em branco*
     }
 contagem = 0;
 }
-void pinOnOff(String consoleText){
-  bufferArray[1] = consoleText;
+//MODO DE OPERAÇÃO DO PINO SELECIONADO
+void pin_mode(String consoleText){
   if(bufferArray[0] != NULL){
-    onOff(bufferArray[1]);
+    bufferArray[1] = consoleText;
+    int activePin = bufferArray[0].substring(1).toInt(); //BUSCA O NUMETO EM ESTRING E TRANSFORMA EM INT
+      //pinMode(activePin, consoleText.toInt());
+      pinomodeSuccess(consoleText);
+  }
+}
+void pinOnOff(String consoleText){
+  bufferArray[2] = consoleText;
+  if(bufferArray[1] != NULL){
+    onOff(bufferArray[2]);
     activePin();
   }else{
-    pinonaoencontrado();
+    pinomodeError();
   }
 }
 //ACIONAMENTO DO PINOS
 void activePin(){
-  int pino = bufferArray[0].substring(1).toInt();
-  if(bufferArray[1] == "ON"){
-    digitalWrite(pino, pin_On);
-    delay(1000);   
-  }else if(bufferArray[1] == "OFF"){
-    digitalWrite(pino, pin_Off);
-    delay(1000);
+  int activePin = bufferArray[0].substring(1).toInt(); //BUSCA O NUMERO EM ESTRING E TRANSFORMA EM INT
+  if(bufferArray[2] == "ON"){
+    digitalWrite (activePin, pin_On);  
+  }else if(bufferArray[2] == "OFF"){
+    digitalWrite (activePin, pin_Off);
   } 
 }
 //MENSAGENS E RETORNOS DE ERROS
@@ -97,6 +103,12 @@ void pinLost(String consoleText) {
 //USADO PELAS FUNÇÕES pinOnOff
 void pinonaoencontrado() {
   returnConsoleText("Selecione um Pino!");
+}
+void pinomodeSuccess(String consoleText) {
+  returnConsoleText("Modo de Operação " + consoleText + " Acionado!");
+}
+void pinomodeError() {
+  returnConsoleText("Selecione um Modo de Operação!");
 }
 //USADO PELAS FUNÇÕES boasVindas e comnandError
 void returnConsoleText(String text){
@@ -162,7 +174,6 @@ void helpePin(){
 }
 void setup() {
   Serial.begin(9600);
-  pinMode(PIN_13, OUTPUT); //PIN_D13
   boasVindas();
 }
 void loop(){
