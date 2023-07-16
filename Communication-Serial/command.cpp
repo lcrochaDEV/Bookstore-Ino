@@ -37,7 +37,7 @@ void console() {
 //FUNÇÃO QUE VERIFICA SE ELEMENTO EXISTE NO ARRAY pinType
 int pinTypeExiste(String consoleText){ //imprimindo texto em branco*
   while(contagem < pinMode_lenght()) {
-    if(consoleText.indexOf(String(pinType[contagem])) == 0){ //VERIFICA SE EXISTE NO ARRAY
+    if(consoleText == pinType[contagem]){ //VERIFICA SE EXISTE NO ARRAY
       if (consoleText.indexOf("A") == 0 && consoleText.length() == 2 || consoleText.indexOf("D") == 0 && consoleText.length() <= 3) {
         bufferArray[0] = consoleText; //OBRIGATÓRIO
         printTxt(consoleText);
