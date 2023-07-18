@@ -1,6 +1,6 @@
 /**************************LUCAS ROCHA****************************/
 /*
- * Portas Alalogicas A = 1,2,3,4,5,6,7.
+ * Portas ANalogicas A = 1,2,3,4,5,6,7.
  * Portas Analogicas/Digitais 14, 15, 16, 17, 18, 19, 20.
  * Portas Digitais D = 2,3,4,5PWM,6PWM,7,8,9PWM,10PWM,11PWM,12,13.
  *
@@ -62,7 +62,7 @@ void console() {
 }
 //FUNÇÃO QUE VERIFICA SE ELEMENTO EXISTE NO ARRAY pinType
 int pinTypeExiste(String consoleText){ //imprimindo texto em branco*
-  while(contagem < pinMode_lenght()) {
+  while(contagem < ArraySize(pinType)) {
     if(consoleText == pinType[contagem]){ //VERIFICA SE EXISTE NO ARRAY
       if (consoleText.indexOf("A") == 0 && consoleText.length() == 2 || consoleText.indexOf("D") == 0 && consoleText.length() <= 3) {
         bufferArray[0] = consoleText; //OBRIGATÓRIO
@@ -94,6 +94,7 @@ void pin_mode(String consoleText){
   if(bufferArray[0] != NULL){
     bufferArray[1] = consoleText;
     pinomodeSuccess.MessageView("Modo de Operação " + consoleText + " Acionado!");
+    pinAtivo.MessageView("ESP-NOW-" + bufferArray[0] + ">");
   }
 }
 void pinOnOff(String consoleText){
@@ -162,7 +163,7 @@ void pinomodeError() {
 void returnConsoleText(String text){
   if(bufferArray[0] == NULL){
     errorGenerico.MessageView(text);
-    errorGenerico.MessageView("ESP-NOW> ");
+    promptInicial.MessageView("ESP-NOW> ");
   }else {
     errorGenerico.MessageView(text);
     errorGenerico.MessageView("ESP-NOW-" + bufferArray[0] + ">");
