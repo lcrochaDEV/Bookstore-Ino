@@ -176,13 +176,12 @@ void retornMenuPrincipal(){
   for (int i = 0; i <= 2; i++) {
     bufferArray[i] = "\0"; 
   }
-  Serial.print(promptCLI);
-  Serial.println();
+  Message promptInicial("ESP-NOW> ");
 }
 void helpePin(){
     Serial.print("/***********************PINOS ARDUINO NANO************************/");
     Serial.println();
-    Serial.print("Portas Alalogicas A = 1,2,3,4,5,6,7.");
+    Serial.print("Portas Analogicas A = 1,2,3,4,5,6,7.");
     Serial.println();
     Serial.print("Portas Analogicas/Digitais 14, 15, 16, 17, 18, 19, 20.");
     Serial.println();
