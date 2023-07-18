@@ -25,27 +25,26 @@ template< typename T, size_t N > size_t ArraySize (T (&) [N]){
 }
 class Message {
   public:
-    Message(String msg);
-    void MessageView();
+    void MessageView(String msg);
   private:
-    String text;
 };
-Message::Message(String msg){
-  text = msg;
-}
-void Message::MessageView(){
-  Serial.print(text);
+void Message::MessageView(String msg){
+  Serial.print(msg);
   Serial.println();
 }
-
 //MENSAGENS E RETORNOS DE ERROS
-Message boasVindas("O Modulo Iniciou com Sucesso...");
-Message promptInicial("ESP-NOW> ");
+Message boasVindas;
+Message promptInicial;
+Message printTxt;
+Message helpPin;
+Message pinAtivo;
+Message errorGenerico;
+Message pinomodeSuccess;
 
 void setup() {
   Serial.begin(9600);
-  boasVindas.MessageView();
-  promptInicial.MessageView();
+  boasVindas.MessageView("O Modulo Iniciou com Sucesso...");;
+  promptInicial.MessageView("ESP-NOW> ");
 }
 // VERIFICAR FILTRA ELEMENTOS DE UM ARRAY (filter)
 //SERIAL COMMAND
@@ -67,7 +66,7 @@ int pinTypeExiste(String consoleText){ //imprimindo texto em branco*
     if(consoleText == pinType[contagem]){ //VERIFICA SE EXISTE NO ARRAY
       if (consoleText.indexOf("A") == 0 && consoleText.length() == 2 || consoleText.indexOf("D") == 0 && consoleText.length() <= 3) {
         bufferArray[0] = consoleText; //OBRIGATÓRIO
-        printTxt(consoleText);
+        printTxt.MessageView("ESP-NOW-" + consoleText + ">");
       break;
       }
     }else if(consoleText == "INPUT" || consoleText == "OUTPUT" || consoleText == "OUTPUT"){
@@ -80,7 +79,7 @@ int pinTypeExiste(String consoleText){ //imprimindo texto em branco*
       retornMenuPrincipal();
     break;
     }else if(consoleText == "HELP"){
-      helpePin();
+      help();
     break;
     }else if(pinType[contagem] == -1){
       comnandError(); //ERRO
@@ -94,9 +93,7 @@ contagem = 0;
 void pin_mode(String consoleText){
   if(bufferArray[0] != NULL){
     bufferArray[1] = consoleText;
-    int activePin = bufferArray[0].substring(1).toInt(); //BUSCA O NUMETO EM ESTRING E TRANSFORMA EM INT
-      //pinMode(activePin, consoleText.toInt());
-      pinomodeSuccess(consoleText);
+    pinomodeSuccess.MessageView("Modo de Operação " + consoleText + " Acionado!");
   }
 }
 void pinOnOff(String consoleText){
@@ -117,42 +114,6 @@ void activePin(){
     digitalWrite (activePin, pin_Off);
   } 
 }
-void comnandError() {
-  returnConsoleText("error, comando null!");
-}
-void pinLost(String consoleText) {
-  returnConsoleText("("+ consoleText +")Pino não Encontrado!");
-}
-//USADO PELAS FUNÇÕES pinOnOff
-void pinonaoencontrado() {
-  returnConsoleText("Selecione um Pino!");
-}
-void pinomodeSuccess(String consoleText) {
-  returnConsoleText("Modo de Operação " + consoleText + " Acionado!");
-}
-void pinomodeError() {
-  returnConsoleText("Selecione um Modo de Operação!");
-}
-//USADO PELAS FUNÇÕES boasVindas e comnandError
-void returnConsoleText(String text){
-  if(bufferArray[0] == NULL){
-    errorGenerico(text, promptCLI);
-  }else {
-    errorGenerico(text, "ESP-NOW-" + bufferArray[0] + ">");
-  }
-}
-//USADO PELAS FUNÇÕES returnConsoleText
-void errorGenerico(String text, String modePin){
-  Serial.print(text);
-  Serial.println();
-  Serial.print(modePin);
-  Serial.println();
-}
-//USADO PELAS FUNÇÕES pinTypeExiste e activePin
-void printTxt(String consoleText){
-  Serial.print("ESP-NOW-" + consoleText + ">");
-  Serial.println();
-}
 void onOff(String onOff){
   if(onOff == "ON"){
     ativo(onOff, "ativo");
@@ -164,37 +125,49 @@ void onOff(String onOff){
 }
 //USADO PELAS FUNÇÕES onOff
 void ativo(String onOff, String text){
-    Serial.print("ESP-NOW-" + bufferArray[0] + ">" + onOff);
-    Serial.println();
-    Serial.print("Pino " + bufferArray[0] + " " + text +" com sucesso!");
-    Serial.println();
-    Serial.print("ESP-NOW-" + bufferArray[0] + ">");
-    Serial.println();
+  pinAtivo.MessageView("ESP-NOW-" + bufferArray[0] + ">" + onOff);
+  pinAtivo.MessageView("Pino " + bufferArray[0] + " " + text +" com sucesso!");
+  pinAtivo.MessageView("ESP-NOW-" + bufferArray[0] + ">");
 }
-//USADO PELAS FUNÇÕES
+//USADO PELAS FUNÇÕES help
 void retornMenuPrincipal(){
   for (int i = 0; i <= 2; i++) {
     bufferArray[i] = "\0"; 
   }
-  Message promptInicial("ESP-NOW> ");
+  promptInicial.MessageView("ESP-NOW> ");
 }
-void helpePin(){
-    Serial.print("/***********************PINOS ARDUINO NANO************************/");
-    Serial.println();
-    Serial.print("Portas Analogicas A = 1,2,3,4,5,6,7.");
-    Serial.println();
-    Serial.print("Portas Analogicas/Digitais 14, 15, 16, 17, 18, 19, 20.");
-    Serial.println();
-    Serial.print("Portas Digitais D = 2,3,4,5PWM,6PWM,7,8,9PWM,10PWM,11PWM,12,13.");
-    Serial.println();
-    Serial.println();
-    Serial.print("Data 12/07/2023");
-    Serial.println();
-    Serial.print("/*****************************************************************/");
-    Serial.println();
+void help(){
+    helpPin.MessageView("/***********************PINOS ARDUINO NANO************************/");
+    helpPin.MessageView("Portas Analogicas A = 1,2,3,4,5,6,7.");
+    helpPin.MessageView("Portas Analogicas/Digitais 14, 15, 16, 17, 18, 19, 20.");
+    helpPin.MessageView("Portas Digitais D = 2,3,4,5PWM,6PWM,7,8,9PWM,10PWM,11PWM,12,13.");
+    helpPin.MessageView("Data 12/07/2023");
+    helpPin.MessageView("/*****************************************************************/");
     retornMenuPrincipal();
 }
-
+void comnandError() {
+  returnConsoleText("error, comando null!");
+}
+void pinLost(String consoleText) {
+  returnConsoleText("("+ consoleText +")Pino não Encontrado!");
+}
+//USADO PELAS FUNÇÕES pinOnOff
+void pinonaoencontrado() {
+  returnConsoleText("Selecione um Pino!");
+}
+void pinomodeError() {
+  returnConsoleText("Selecione um Modo de Operação!");
+}
+//USADO PELAS FUNÇÕES boasVindas e comnandError
+void returnConsoleText(String text){
+  if(bufferArray[0] == NULL){
+    errorGenerico.MessageView(text);
+    errorGenerico.MessageView("ESP-NOW> ");
+  }else {
+    errorGenerico.MessageView(text);
+    errorGenerico.MessageView("ESP-NOW-" + bufferArray[0] + ">");
+  }
+}
 void loop(){
  console(); 
 }
