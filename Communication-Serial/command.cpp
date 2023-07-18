@@ -20,6 +20,33 @@ int contagem = 0; //CONTADOR
 int pinMode_lenght(){
   return sizeof(pinType)/ sizeof(int);
 }
+template< typename T, size_t N > size_t ArraySize (T (&) [N]){
+  return N; 
+}
+class Message {
+  public:
+    Message(String msg);
+    void MessageView();
+  private:
+    String text;
+};
+Message::Message(String msg){
+  text = msg;
+}
+void Message::MessageView(){
+  Serial.print(text);
+  Serial.println();
+}
+
+//MENSAGENS E RETORNOS DE ERROS
+Message boasVindas("O Modulo Iniciou com Sucesso...");
+Message promptInicial("ESP-NOW> ");
+
+void setup() {
+  Serial.begin(9600);
+  boasVindas.MessageView();
+  promptInicial.MessageView();
+}
 // VERIFICAR FILTRA ELEMENTOS DE UM ARRAY (filter)
 //SERIAL COMMAND
 void console() {
@@ -89,10 +116,6 @@ void activePin(){
   }else if(bufferArray[2] == "OFF"){
     digitalWrite (activePin, pin_Off);
   } 
-}
-//MENSAGENS E RETORNOS DE ERROS
-void boasVindas() {
-  returnConsoleText("O Modulo Iniciou com Sucesso...");
 }
 void comnandError() {
   returnConsoleText("error, comando null!");
@@ -165,17 +188,14 @@ void helpePin(){
     Serial.println();
     Serial.print("Portas Digitais D = 2,3,4,5PWM,6PWM,7,8,9PWM,10PWM,11PWM,12,13.");
     Serial.println();
-     Serial.println();
+    Serial.println();
     Serial.print("Data 12/07/2023");
     Serial.println();
     Serial.print("/*****************************************************************/");
     Serial.println();
     retornMenuPrincipal();
 }
-void setup() {
-  Serial.begin(9600);
-  boasVindas();
-}
+
 void loop(){
  console(); 
 }
