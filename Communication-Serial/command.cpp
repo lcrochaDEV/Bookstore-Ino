@@ -8,7 +8,7 @@
 */
 /*****************************************************************/
 String promptCLI; //NOME DO MODULO
-String pinType[] = {"A1", "D2", "D13"};
+String pinType[30] = {"D13"};
 String bufferArray[3]; // =>  activePin, estado}
 
 int pin_On = HIGH; //PIN STATE ALTO = 1
@@ -41,9 +41,10 @@ void Message::messageView(String msg){
   Serial.println();
 }
 //MENSAGENS E RETORNOS DE ERROS
-Message reNme;
+Message renameElement;
 Message boasVindas;
 Message promptInicial;
+Message mostraPin;
 Message printTxt;
 Message helpPin;
 Message pinAtivo;
@@ -52,7 +53,7 @@ Message pinomodeSuccess;
 
 void setup() {
   Serial.begin(9600);
-  reNme.elementName("ESP-NOW");
+  renameElement.elementName("ESP-NOW");
   boasVindas.helloWord("O Modulo Iniciou com Sucesso...");
 }
 // VERIFICAR FILTRA ELEMENTOS DE UM ARRAY (filter)
@@ -73,33 +74,54 @@ void console() {
 //FUNÇÃO QUE VERIFICA SE ELEMENTO EXISTE NO ARRAY pinType
 int pinTypeExiste(String consoleText){ //imprimindo texto em branco*
   while(contagem < ArraySize(pinType)) {
-      //Serial.println(pinType[contagem] == 0);
-    if(consoleText == pinType[contagem]){ //VERIFICA SE EXISTE NO ARRAY
+    if(consoleText != pinType[contagem]){ //VERIFICA SE EXISTE NO ARRAY
       if (consoleText.indexOf("A") == 0 && consoleText.length() == 2 || consoleText.indexOf("D") == 0 && consoleText.length() <= 3) {
+        for (int i = 0; i < ArraySize(pinType); i++) {
+          if(pinType[i] != consoleText) {
+            pinType[i] = consoleText;
+            Serial.print(ArraySize(pinType));
+          }
+        }
         bufferArray[0] = consoleText; //OBRIGATÓRIO
         printTxt.messageView(promptCLI + "-" + consoleText + ">");
       break;
+      }else if(consoleText == "LISTPIN"){
+        mostraPinos();
+      break;
+      }else if(consoleText == "INPUT" || consoleText == "OUTPUT" || consoleText == "OUTPUT"){
+        pin_mode(consoleText);
+      break;
+      }else if(consoleText == "ON" || consoleText == "OFF"){;
+        pinOnOff(consoleText);
+      break;
+      }else if(consoleText == "END"){
+        retornMenuPrincipal();
+      break;
+      }else if(consoleText == "HELP"){
+        help();
+      break;
+      }else if(pinType[contagem] == -1){
+        comnandError(); //ERRO
+      break;
       }
-    }else if(consoleText == "INPUT" || consoleText == "OUTPUT" || consoleText == "OUTPUT"){
-      pin_mode(consoleText);
-    break;
-    }else if(consoleText == "ON" || consoleText == "OFF"){;
-      pinOnOff(consoleText);
-    break;
-    }else if(consoleText == "END"){
-      retornMenuPrincipal();
-    break;
-    }else if(consoleText == "HELP"){
-      help();
-    break;
-    }else if(pinType[contagem] == -1){
-      comnandError(); //ERRO
-    break;
     }
     contagem++;
   }
 contagem = 0;
 }
+//MOSTRA PINOS NA LISTA
+void mostraPinos(){
+  if(pinType[1] != 0) {
+    for (int i = 0; i < ArraySize(pinType); i++) {
+      if(pinType[i] != 0) {
+        mostraPin.messageView(pinType[i]);
+      }
+    }
+ }else{
+  returnConsoleText("Apenas o pino " + pinType[0] + "(default) Cadastrado.");
+ }
+}  
+
 //MODO DE OPERAÇÃO DO PINO SELECIONADO
 void pin_mode(String consoleText){
   if(bufferArray[0] != NULL){
