@@ -184,15 +184,12 @@ void Message::messageView(String consoleText){
 }
 
 //MENSAGENS E RETORNOS DE ERROS
-Message renameElement;
-Message boasVindas;
-
 Message consoleView;
 void setup() {
   delay(100);
   Serial.begin(9600);
-  renameElement.elementName("ESP-NOW");
-  boasVindas.helloWord("O Modulo Iniciou com Sucesso...");
+  consoleView.elementName("ESP-NOW");
+  consoleView.helloWord("O Modulo Iniciou com Sucesso...");
 }
 // VERIFICAR FILTRAR ELEMENTOS DE UM ARRAY (filter)
 
