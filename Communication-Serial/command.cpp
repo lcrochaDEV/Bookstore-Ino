@@ -1,6 +1,6 @@
 /**************************LUCAS ROCHA****************************/
 /*
- * Portas ANalogicas A = 1,2,3,4,5,6,7.
+ * Portas Analogicas A = 1,2,3,4,5,6,7.
  * Portas Analogicas/Digitais 14, 15, 16, 17, 18, 19, 20.
  * Portas Digitais D = 2,3,4,5PWM,6PWM,7,8,9PWM,10PWM,11PWM,12,13.
  *
@@ -56,7 +56,7 @@ void setup() {
   renameElement.elementName("ESP-NOW");
   boasVindas.helloWord("O Modulo Iniciou com Sucesso...");
 }
-// VERIFICAR FILTRA ELEMENTOS DE UM ARRAY (filter)
+// VERIFICAR FILTRAR ELEMENTOS DE UM ARRAY (filter)
 //SERIAL COMMAND
 void console() {
   if (Serial.available() > 0) {
@@ -71,7 +71,7 @@ void console() {
   }
 }
 
-//FUNÇÃO QUE VERIFICA SE ELEMENTO EXISTE NO ARRAY pinType
+//FUNÇÃO QUE VERIFICA SE ITEM ELEMENTO EXISTE NO ARRAY pinType
 int pinTypeExiste(String consoleText){ //imprimindo texto em branco*
   while(contagem < ArraySize(pinType)) {
     if(consoleText != pinType[contagem]){ //VERIFICA SE EXISTE NO ARRAY
@@ -88,7 +88,7 @@ int pinTypeExiste(String consoleText){ //imprimindo texto em branco*
       }else if(consoleText == "LISTPIN"){
         mostraPinos();
       break;
-      }else if(consoleText == "INPUT" || consoleText == "OUTPUT" || consoleText == "OUTPUT"){
+      }else if(consoleText == "INPUT" || consoleText == "OUTPUT" || consoleText == "INPUT_PULLUP"){
         pin_mode(consoleText);
       break;
       }else if(consoleText == "ON" || consoleText == "OFF"){;
@@ -145,7 +145,7 @@ void pinOnOff(String consoleText){
 }
 //ACIONAMENTO DO PINOS
 void activePin(){
-  int activePin = bufferArray[0].substring(1).toInt(); //BUSCA O NUMERO EM ESTRING E TRANSFORMA EM INT
+  int activePin = bufferArray[0].substring(1).toInt(); //BUSCA O NUMERO EM STRING E TRANSFORMA EM INT
   if(bufferArray[2] == "ON"){
     digitalWrite (activePin, pin_On);  
   }else if(bufferArray[2] == "OFF"){
