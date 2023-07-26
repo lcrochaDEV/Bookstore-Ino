@@ -39,7 +39,6 @@ class Message {
     void pin_mode(String consoleText = "");
     void pinOnOff(String consoleText);
     void activePin();
-    void onOff(String consoleText);
     void ativo(String onOff, String consoleText);
     void retornMenuPrincipal();
     void help();
@@ -70,7 +69,6 @@ void Message::consoleView(){
     }
   }
 }
-
 void Message::digitalPins(String consoleText){
   while(contagem < ArraySize(pinType)) {
     if(consoleText == pinType[contagem]){ //VERIFICA SE EXISTE NO ARRAY
@@ -134,29 +132,23 @@ void Message::pin_mode(String consoleText = ""){
   }
 }
 void Message::pinOnOff(String consoleText){
-  bufferArray[2] = consoleText;
-  if(bufferArray[0] == NULL){
-    returnConsoleText("Selecione um Pino!");
-  }else if(bufferArray[1] != NULL){
-    onOff(bufferArray[2]);
+  if(bufferArray[1] != NULL){
+    bufferArray[2] = consoleText;
     activePin();
-  }else{
+  }else if(!bufferArray[0]){
     returnConsoleText("error, comando null!"); //ERRO
+  }else{
+    returnConsoleText("Selecione um Pino!");
   }
 }
 void Message::activePin(){
   int activePin = bufferArray[0].substring(1).toInt(); //BUSCA O NUMERO EM STRING E TRANSFORMA EM INT
   if(bufferArray[2] == "ON"){
     digitalWrite (activePin, pin_On);  
+     ativo(bufferArray[2], "ativo");
   }else if(bufferArray[2] == "OFF"){
     digitalWrite (activePin, pin_Off);
-  } 
-}
-void Message::onOff(String onOff){
-  if(onOff == "ON"){
-    ativo(onOff, "ativo");
-  }else if(onOff == "OFF"){
-    ativo(onOff, "desativado");
+     ativo(bufferArray[2], "desativado");
   }else{
     returnConsoleText("error, comando null!"); //ERRO
   }
