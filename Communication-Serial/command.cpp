@@ -8,7 +8,7 @@
 */
 /*****************************************************************/
 String promptCLI; //NOME DO MODULO
-String pinType[30] = {"D13"};
+String digitalPinArr[30] = {"D13"};
 String bufferArray[3]; // =>  activePin, estado}
 
 int pin_On = HIGH; //PIN STATE ALTO = 1
@@ -17,7 +17,7 @@ int pin_Off = LOW; //PIN STATE BAIXO = 0
 int contagem = 0; //CONTADOR
 //CONTA O TAMANHO DO ARRAY pinNumber
 int pinMode_lenght(){
-  return sizeof(pinType)/ sizeof(int);
+  return sizeof(digitalPinArr)/ sizeof(int);
 }
 template< typename T, size_t N > size_t ArraySize (T (&) [N]) {
   return N; 
@@ -33,6 +33,7 @@ class Message {
     String consoleTextView;
     
     void digitalPins(String consoleText);
+    void subMenuFunction(String consoleText);
     void analogPins(String consoleText);
     void mostraPinos();
     //MODO DE OPERAÇÃO DO PINO SELECIONADO
@@ -62,57 +63,64 @@ void Message::consoleView(){
     consoleText.trim();
     if (consoleText.length() > 1) {
       consoleText.toUpperCase();
-       // analogPins(consoleText);
-        digitalPins(consoleText);
+      digitalPins(consoleText);
     }else{
       returnConsoleText("("+ consoleText +")Pino não Encontrado!");
     }
   }
 }
+//MENU PINOS DIGITAIS
 void Message::digitalPins(String consoleText){
-  while(contagem < ArraySize(pinType)) {
-    if(consoleText == pinType[contagem]){ //VERIFICA SE EXISTE NO ARRAY
+  while(contagem < ArraySize(digitalPinArr)) {
+    if(consoleText == digitalPinArr[contagem]){ //VERIFICA SE EXISTE NO ARRAY
       if (consoleText.indexOf("D") == 0 && consoleText.length() <= 3) {
         bufferArray[0] = consoleText; //OBRIGATÓRIO
         pin_mode();
       break;
       }
-    }else if(consoleText == "LISTPIN"){
-      mostraPinos();
+    }else if(consoleText != digitalPinArr[contagem]){
+      if (consoleText.indexOf("D") == 0 && consoleText.length() <= 3) {
+        Serial.println("Não existe!");
+      }else{
+      subMenuFunction(consoleText);
     break;
-    }else if(consoleText == "INPUT" || consoleText == "OUTPUT" || consoleText == "INPUT_PULLUP"){
-      pin_mode(consoleText);
-    break;
-    }else if(consoleText == "ON" || consoleText == "OFF"){;
-      pinOnOff(consoleText);
-    break;
-    }else if(consoleText == "END"){
-      retornMenuPrincipal();
-    break;
-    }else if(consoleText == "HELP"){
-      help();
-    break;
-    }else  {
-      returnConsoleText("error, comando null!"); //ERRO
+    }
     break;
     }
     contagem++;
   }
 contagem = 0;
 }
+//SUB-MENU
+void Message::subMenuFunction(String consoleText){
+  if(consoleText == "LISTPIN"){
+    mostraPinos();
+  }else if(consoleText == "INPUT" || consoleText == "OUTPUT" || consoleText == "INPUT_PULLUP"){
+    pin_mode(consoleText);
+  }else if(consoleText == "ON" || consoleText == "OFF"){;
+    pinOnOff(consoleText);
+  }else if(consoleText == "END"){
+    retornMenuPrincipal();
+  }else if(consoleText == "HELP"){
+    help();
+  }else  {
+    returnConsoleText("error, comando null!"); //ERRO
+  }
+}
+
 void Message::analogPins(String consoleText){
   messageViewMsg1(promptCLI + "-" + consoleText + ">");
 }
 //MOSTRA PINOS NA LISTA
 void Message::mostraPinos(){
-  if(pinType[1] != 0) {
-    for (int i = 0; i < ArraySize(pinType); i++) {
-      if(pinType[i] != 0) {
-        messageViewMsg1(pinType[i]);
+  if(digitalPinArr[1] != 0) {
+    for (int i = 0; i < ArraySize(digitalPinArr); i++) {
+      if(digitalPinArr[i] != 0) {
+        messageViewMsg1(digitalPinArr[i]);
       }
     }
  }else{
-  returnConsoleText("Apenas o pino " + pinType[0] + "(default) Cadastrado.");
+  returnConsoleText("Apenas o pino " + digitalPinArr[0] + "(default) Cadastrado.");
  }
 }  
 //MENSAGEM DE TODO O PROGRAMA
