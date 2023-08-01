@@ -1,4 +1,4 @@
-/****LUCAS ROCHA****/
+/*LUCAS ROCHA*/
 /*
  * Portas Analogicas A = 1,2,3,4,5,6,7.
  * Portas Analogicas/Digitais 14, 15, 16, 17, 18, 19, 20.
@@ -6,16 +6,21 @@
  *
  * Data 12/07/2023
 */
-/*********/
+/******/
+#define btn_1 A0
+#define btn_2 2
+
+int pinCollection[] = {btn_1, btn_2};
+
 int contagem = 0; //CONTADOR
 
 //CONTA O TAMANHO DO ARRAY
 template< typename T, size_t N > size_t ArraySize (T (&) [N]) {
   return N; 
 }
-//******BUFFER MEMORY******//
+//***BUFFER MEMORY***//
 String bufferArray[5]; // =>  [PIN = type String, NUMBER PIN = type Nunber, MODE OPERATION = type Number, ON|OFF = type String]
-//******BUFFER MEMORY******//
+//***BUFFER MEMORY***//
 
 String promptCLI; //NOME DO MODULO
 int digitalPinArr[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13}; //ARRAY DE PINOS
@@ -88,13 +93,14 @@ void Message::consoleView(){
 //MENU PINOS DIGITAIS
 void Message::arduinoPins(String consoleText){
   if(consoleText.startsWith("D") && consoleText.length() <= 3) {
+    bufferArray[arrayIndexOff(consoleText)] = ""; //ZERANDO ARRAY
     while(contagem < ArraySize(digitalPinArr)) {
       if(consoleText.substring(1).equals(String(digitalPinArr[contagem]))){ //VERIFICA SE EXISTE NO ARRAY
         bufferArray[0] = consoleText; //OBRIGATÓRIO
         bufferArray[1] = digitalPinArr[contagem]; //OBRIGATÓRIO
         pin_mode();
       break;
-      }else if(consoleText.substring(1).equals(String(ArraySize(digitalPinArr)))){
+      }else if(consoleText.substring(1).endsWith(String(digitalPinArr[contagem]))){
         returnConsoleText("Pino não encontrado!");
       break;
       }
@@ -102,12 +108,11 @@ void Message::arduinoPins(String consoleText){
     }
     contagem = 0;
   } else if(consoleText.startsWith("A") && consoleText.length() <= 3) {
+    bufferArray[arrayIndexOff(consoleText)] = ""; //ZERANDO ARRAY
     while(contagem < ArraySize(analogPinArr)) {
       if(consoleText.substring(1) + String(ArraySize(digitalPinArr)).equals(String(analogPinArr[contagem]))){ //VERIFICA SE EXISTE NO ARRAY
-       // Serial.println();
         bufferArray[0] = consoleText; //OBRIGATÓRIO
         bufferArray[1] = analogPinArr[contagem];
-        Serial.println( bufferArray[1]);
         pin_mode();
       break;
      }else if(consoleText.substring(1).endsWith(String(analogPinArr[contagem]))){
@@ -170,7 +175,7 @@ void Message::pin_mode(String consoleText = ""){
   }
 }
 void Message::pinOnOff(String consoleText){
-  if(bufferArray[2] != NULL){
+  if(bufferArray[0] != NULL){
     bufferArray[3] = consoleText;
     activePin();
   }else if(!bufferArray[0]){
@@ -181,7 +186,7 @@ void Message::pinOnOff(String consoleText){
 }
 void Message::activePin(){
   if(bufferArray[3] == "ON"){
-    digitalWrite (bufferArray[1].toInt(), HIGH);  
+    digitalWrite (bufferArray[1].toInt(), HIGH); 
     ativo("ativo");
   }else if(bufferArray[3] == "OFF"){
     digitalWrite (bufferArray[1].toInt(), LOW);
@@ -202,12 +207,12 @@ void Message::retornMenuPrincipal(){
     messageViewMsg1(promptCLI + "> ");
 }
 void Message::help(){
-  messageViewMsg1("/***PINOS ARDUINO NANO****/");
+  messageViewMsg1("/**PINOS ARDUINO NANO*/");
   messageViewMsg1("Portas Analogicas A = 1,2,3,4,5,6,7.");
   messageViewMsg1("Portas Analogicas/Digitais 14, 15, 16, 17, 18, 19, 20.");
   messageViewMsg1("Portas Digitais D = 2,3,4,5PWM,6PWM,7,8,9PWM,10PWM,11PWM,12,13.");
   messageViewMsg1("Data 12/07/2023");
-  messageViewMsg1("/*********/");
+  messageViewMsg1("/***/");
   messageViewMsg1(promptCLI + "> ");
 }
 void Message::returnConsoleText(String consoleText){
